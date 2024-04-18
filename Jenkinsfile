@@ -15,7 +15,7 @@ pipeline {
         def GIT_BRANCH = "main"
         def AVAMAR_CREDENTIAL_ID = "bd957348-c142-4388-ba91-4002fcd67ae4"
         def PLAYBOOK_NAME = "main.yml"
-        def TARGET = "wag_dc_spk_av"
+        def TARGET = "all_wag_av"
         }
    /* END Environment */
 
@@ -28,38 +28,7 @@ pipeline {
    /* All stages */
     stages {
 
-        /* Pull Terraform code from GitHUB */
-        stage('Checkout Role') {
-            steps {
-                script {
-                    properties([pipelineTriggers([pollSCM('* * * * *')])])
-                }
-                checkout([$class: 'GitSCM',
-                          branches: [[name: "${GIT_BRANCH}"]],
-                          doGenerateSubmoduleConfigurations: false,
-                          extensions: [],
-                          submoduleCfg: [],
-                          userRemoteConfigs: [[credentialsId: "${GIT_CREDENTIAL}", url: "${GIT_URL_ROLE}"]]
-                ])
-            }
-            post {
-                success {
-                    echo 'GIT checkout success!'
-                }
-                unstable {
-                    echo 'I am unstable :/'
-                }
-                failure {
-                    echo 'GIT checkout failed :('
-                }
-                changed {
-                    echo 'Things were different before...'
-                }
-            }
-        }
-        /* End Pull Terraform code from GitHUB */
-
-   /* Pull Terraform code from GitHUB */
+        /* Pull Ansible playbook code from GitHUB */
         stage('Checkout Playbook') {
             steps {
                 script {
@@ -88,13 +57,19 @@ pipeline {
                 }
             }
         }
-        /* End Pull Terraform code from GitHUB */
+        /* End Pull Ansible playbook code from GitHUB */
+
+         /* Check YAML file */
+       stage('Standardize YAML file') {
+            steps {
+                dir("${WORKSPACE}") {
+                    sh "yamllint ."
+                }
+            }
+        }
+        /* End Check YAML file */
 
 
-
-/* End Stage setup Ansible requirements */
-
-        /* Stage checkout */
          /* Stage Run Ansible playbook */
    stage('Generate Avamar reports') {
   steps {
