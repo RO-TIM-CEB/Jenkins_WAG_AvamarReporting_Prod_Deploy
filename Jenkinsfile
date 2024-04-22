@@ -9,7 +9,7 @@ pipeline {
     /* Environment */
 
     environment {
-        def GIT_URL= "https://github.com/RO-TIM-CEB/ans_play_avamar_reports.git"
+        def GIT_URL= "https://github.com/RO-TIM-CEB/ans_play_avamar_reports_wag.git"
         def GIT_URL_ROLE= "https://github.com/lingeek/ans_role_avamar_reports_backup.git"
         def GIT_CREDENTIAL ="cf90f421-333c-4efd-8de7-4d67ec621e1a"
         def GIT_BRANCH = "main"
